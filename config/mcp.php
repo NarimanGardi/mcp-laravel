@@ -63,6 +63,17 @@ return [
     ],
 
     /*
+     * Prompt templates (MCP prompts). Each points the agent at the tools above,
+     * so a one-click prompt becomes grounded, real-app work.
+     */
+    'prompts' => [
+        'explain_app' => true,
+        'review_model' => true,
+        'write_test' => true,
+        'debug_recent_error' => true,
+    ],
+
+    /*
      * HTTP transport. Off by default — when enabled, the server is exposed at
      * POST /{path}, guarded by a bearer token. Never enable it without a token.
      */

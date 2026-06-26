@@ -5,8 +5,10 @@ namespace Gardi\McpLaravel;
 use Gardi\McpLaravel\Console\InstallCommand;
 use Gardi\McpLaravel\Console\ServeCommand;
 use Gardi\McpLaravel\Http\McpController;
+use Gardi\McpLaravel\Prompts\TemplatePrompt;
 use Gardi\McpLaravel\Resources\ToolResource;
 use Gardi\McpLaravel\Server\Dispatcher;
+use Gardi\McpLaravel\Server\PromptRegistry;
 use Gardi\McpLaravel\Server\ResourceRegistry;
 use Gardi\McpLaravel\Server\StdioServer;
 use Gardi\McpLaravel\Server\ToolRegistry;
@@ -112,9 +114,59 @@ class McpServiceProvider extends ServiceProvider
             return $registry;
         });
 
+        $this->app->singleton(PromptRegistry::class, function ($app) {
+            $enabled = $app['config']->get('mcp.prompts', []);
+
+            $factories = [
+                'explain_app' => fn () => new TemplatePrompt(
+                    'explain_app',
+                    'A high-level tour of this Laravel application.',
+                    [],
+                    'Give me a high-level tour of this Laravel application: its main routes, its domain '
+                    .'models and how they relate, and the shape of the database. Use the list_routes, '
+                    .'relationship_graph and database_schema tools to ground your answer in the real app.',
+                ),
+                'review_model' => fn () => new TemplatePrompt(
+                    'review_model',
+                    'Review an Eloquent model for common issues.',
+                    [['name' => 'model', 'description' => 'Model class (short name or FQCN).', 'required' => true]],
+                    'Review the {model} Eloquent model. Use describe_model and relationship_graph to inspect '
+                    .'it, then assess its relationships, casts, fillable/guarded, query scopes, and any N+1 or '
+                    .'mass-assignment risks. Give concrete, prioritised suggestions.',
+                ),
+                'write_test' => fn () => new TemplatePrompt(
+                    'write_test',
+                    'Write a Pest test for a feature or class.',
+                    [['name' => 'subject', 'description' => 'What to test (a class, route or behaviour).', 'required' => true]],
+                    "Write a Pest test for {subject}, following this application's existing test conventions. "
+                    .'Inspect the relevant routes and models first (list_routes, describe_model) so the test '
+                    .'matches reality.',
+                ),
+                'debug_recent_error' => fn () => new TemplatePrompt(
+                    'debug_recent_error',
+                    'Investigate the most recent application error.',
+                    [],
+                    'Investigate the most recent error in this application. Read the latest log entries with '
+                    .'the tail_logs tool, identify the exception and its stack trace, trace it to the code, and '
+                    .'propose a fix.',
+                ),
+            ];
+
+            $registry = new PromptRegistry;
+
+            foreach ($factories as $name => $factory) {
+                if (($enabled[$name] ?? false) === true) {
+                    $registry->register($factory());
+                }
+            }
+
+            return $registry;
+        });
+
         $this->app->singleton(Dispatcher::class, fn ($app) => new Dispatcher(
             $app->make(ToolRegistry::class),
             $app->make(ResourceRegistry::class),
+            $app->make(PromptRegistry::class),
             'mcp-laravel',
             self::VERSION,
         ));
