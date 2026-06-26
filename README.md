@@ -16,7 +16,7 @@ artisan command that speaks the Model Context Protocol on stdin/stdout.
 ## Requirements
 
 - PHP 8.2+
-- Laravel 11 or 12
+- Laravel 12
 
 ## Install
 
