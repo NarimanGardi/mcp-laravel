@@ -77,6 +77,22 @@ demo uses the package's Post/Comment fixtures; you'd see your app's own models):
 
 Record a GIF of the session with [VHS](https://github.com/charmbracelet/vhs): `vhs demo/demo.tape`.
 
+## HTTP transport
+
+Prefer running it as a service instead of stdio? Enable the HTTP transport and the
+server is exposed at one bearer-authenticated endpoint:
+
+```env
+MCP_HTTP_ENABLED=true
+MCP_HTTP_TOKEN=a-long-random-secret
+# MCP_HTTP_PATH=mcp   # default
+```
+
+Then point an HTTP-capable MCP client at `POST https://your-app.test/mcp` with an
+`Authorization: Bearer <token>` header. It's **off by default and won't register
+without a token** — never expose your schema unauthenticated. Both transports run
+the same protocol handler (a transport-agnostic `Dispatcher`).
+
 ## Tools
 
 | Tool | What it returns |

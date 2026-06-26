@@ -55,4 +55,14 @@ return [
         'models' => true,
     ],
 
+    /*
+     * HTTP transport. Off by default — when enabled, the server is exposed at
+     * POST /{path}, guarded by a bearer token. Never enable it without a token.
+     */
+    'http' => [
+        'enabled' => env('MCP_HTTP_ENABLED', false),
+        'path' => env('MCP_HTTP_PATH', 'mcp'),
+        'token' => env('MCP_HTTP_TOKEN'),
+    ],
+
 ];

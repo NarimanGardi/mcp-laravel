@@ -5,6 +5,9 @@
 - Add MCP **resources** (`resources/list` / `resources/read`): `laravel://schema`,
   `laravel://routes` and `laravel://models`, served as adapters over the existing
   read-only tools. Toggle them in the `resources` config block.
+- Add an **HTTP transport**: a bearer-authenticated `POST /{path}` endpoint, off by
+  default (set `MCP_HTTP_ENABLED` + `MCP_HTTP_TOKEN`). Protocol handling is now
+  shared by the stdio and HTTP transports via a transport-agnostic `Dispatcher`.
 
 ## v0.3.1
 
