@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.4.0
 
 - Add MCP **resources** (`resources/list` / `resources/read`): `laravel://schema`,
   `laravel://routes` and `laravel://models`, served as adapters over the existing
