@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.3.1
 
 - Make model discovery path/namespace configurable via `MCP_MODELS_PATH` /
   `MCP_MODELS_NAMESPACE` (or the `models_path` / `models_namespace` config).
