@@ -11,6 +11,9 @@ return [
         'list_routes' => true,
         'list_models' => true,
         'describe_model' => true,
+        'describe_table' => true,
+        'database_schema' => true,
+        'model_query' => env('MCP_MODEL_QUERY', false),
         'database_query' => env('MCP_DATABASE_QUERY', false),
     ],
 
@@ -26,6 +29,11 @@ return [
         'connection' => env('MCP_DB_CONNECTION'),
         'default_limit' => 100,
         'max_limit' => 1000,
+    ],
+
+    'query' => [
+        'default_limit' => 50,
+        'max_limit' => 500,
     ],
 
 ];
