@@ -109,6 +109,20 @@ MCP_DATABASE_QUERY=true
 MCP_DB_CONNECTION=readonly   # optional: a read-only connection
 ```
 
+## Resources
+
+Beyond tools, the server exposes read-only **resources** — context a client can
+attach to a conversation rather than call on demand:
+
+| URI | Content |
+|-----|---------|
+| `laravel://schema` | The whole database schema (tables + columns). |
+| `laravel://routes` | Every route (method, URI, name, action, middleware). |
+| `laravel://models` | The model relationship graph. |
+
+They're served via `resources/list` / `resources/read` and are thin adapters over
+the tools of the same name. Toggle them in the `resources` config block.
+
 ## Limitations
 
 Worth knowing before you rely on it:

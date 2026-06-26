@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Add MCP **resources** (`resources/list` / `resources/read`): `laravel://schema`,
+  `laravel://routes` and `laravel://models`, served as adapters over the existing
+  read-only tools. Toggle them in the `resources` config block.
+
 ## v0.3.1
 
 - Make model discovery path/namespace configurable via `MCP_MODELS_PATH` /
