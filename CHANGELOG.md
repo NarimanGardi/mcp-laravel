@@ -1,11 +1,13 @@
 # Changelog
 
-## Unreleased
+## v0.5.0
 
 - Add `config_get` — read config values with sensitive keys redacted (errs toward
   over-redaction); omit the key to list namespaces.
 - Add `migration_status` — migration files with ran/pending state and batch numbers.
 - Add `list_commands` — registered Artisan commands with descriptions and usage.
+- Drop Laravel 11 support (it has reached end-of-life for security fixes); require
+  Laravel 12. CI tests Laravel 12 on PHP 8.2–8.4.
 
 ## v0.4.0
 
