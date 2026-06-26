@@ -18,6 +18,7 @@ class Dispatcher
     public function __construct(
         protected ToolRegistry $tools,
         protected ResourceRegistry $resources = new ResourceRegistry,
+        protected PromptRegistry $prompts = new PromptRegistry,
         protected string $serverName = 'mcp-laravel',
         protected string $serverVersion = '0.1.0',
     ) {
@@ -54,6 +55,8 @@ class Dispatcher
                 'tools/call' => $this->success($id, $this->callTool($params)),
                 'resources/list' => $this->success($id, ['resources' => $this->resources->list()]),
                 'resources/read' => $this->success($id, $this->readResource($params)),
+                'prompts/list' => $this->success($id, ['prompts' => $this->prompts->list()]),
+                'prompts/get' => $this->success($id, $this->getPrompt($params)),
                 'ping' => $this->success($id, (object) []),
                 default => $this->error($id, -32601, "Method not found: {$method}"),
             };
@@ -69,6 +72,7 @@ class Dispatcher
             'capabilities' => [
                 'tools' => ['listChanged' => false],
                 'resources' => ['listChanged' => false],
+                'prompts' => ['listChanged' => false],
             ],
             'serverInfo' => ['name' => $this->serverName, 'version' => $this->serverVersion],
         ];
@@ -116,6 +120,26 @@ class Dispatcher
                 'uri' => $resource->uri(),
                 'mimeType' => $resource->mimeType(),
                 'text' => $resource->read(),
+            ]],
+        ];
+    }
+
+    protected function getPrompt(array $params): array
+    {
+        $name = (string) ($params['name'] ?? '');
+        $prompt = $this->prompts->get($name);
+
+        if ($prompt === null) {
+            throw new InvalidArgumentException("Unknown prompt: {$name}");
+        }
+
+        $arguments = is_array($params['arguments'] ?? null) ? $params['arguments'] : [];
+
+        return [
+            'description' => $prompt->description(),
+            'messages' => [[
+                'role' => 'user',
+                'content' => ['type' => 'text', 'text' => $prompt->render($arguments)],
             ]],
         ];
     }
