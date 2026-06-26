@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add `config_get` — read config values with sensitive keys redacted (errs toward
+  over-redaction); omit the key to list namespaces.
+- Add `migration_status` — migration files with ran/pending state and batch numbers.
+- Add `list_commands` — registered Artisan commands with descriptions and usage.
+
 ## v0.4.0
 
 - Add MCP **resources** (`resources/list` / `resources/read`): `laravel://schema`,

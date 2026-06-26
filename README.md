@@ -105,6 +105,9 @@ the same protocol handler (a transport-agnostic `Dispatcher`).
 | `database_schema` | Every table with its columns — a whole-schema overview. |
 | `explain_query` | The query plan (EXPLAIN) for a read-only SELECT — without running it. |
 | `tail_logs` | The last lines of a log file (newest in `storage/logs` by default). |
+| `config_get` | Configuration values, with sensitive ones redacted. |
+| `migration_status` | Which migrations have run vs. are pending, with batch numbers. |
+| `list_commands` | Registered Artisan commands with descriptions. |
 | `model_query` | Rows from a read-only Eloquent query (filters, columns, relations). Opt-in. |
 | `database_query` | Rows from a single **read-only** SELECT. Opt-in (see below). |
 
