@@ -4,6 +4,8 @@ namespace Gardi\McpLaravel;
 
 use Gardi\McpLaravel\Console\InstallCommand;
 use Gardi\McpLaravel\Console\ServeCommand;
+use Gardi\McpLaravel\Resources\ToolResource;
+use Gardi\McpLaravel\Server\ResourceRegistry;
 use Gardi\McpLaravel\Server\StdioServer;
 use Gardi\McpLaravel\Server\ToolRegistry;
 use Gardi\McpLaravel\Tools\DatabaseQueryTool;
@@ -66,8 +68,45 @@ class McpServiceProvider extends ServiceProvider
             return $registry;
         });
 
+        $this->app->singleton(ResourceRegistry::class, function ($app) {
+            $config = $app['config']->get('mcp');
+            $enabled = $config['resources'] ?? [];
+
+            $factories = [
+                'schema' => fn () => new ToolResource(
+                    'laravel://schema',
+                    'Database schema',
+                    'Every table with its columns — the whole database schema.',
+                    new DatabaseSchemaTool($config['database']['connection']),
+                ),
+                'routes' => fn () => new ToolResource(
+                    'laravel://routes',
+                    'HTTP routes',
+                    'Every registered route: method, URI, name, action and middleware.',
+                    new ListRoutesTool($app['router']),
+                ),
+                'models' => fn () => new ToolResource(
+                    'laravel://models',
+                    'Model relationship graph',
+                    'Every Eloquent model and its relationships, as a graph.',
+                    new RelationshipGraphTool($config['models_path'], $config['models_namespace']),
+                ),
+            ];
+
+            $registry = new ResourceRegistry;
+
+            foreach ($factories as $key => $factory) {
+                if (($enabled[$key] ?? false) === true) {
+                    $registry->register($factory());
+                }
+            }
+
+            return $registry;
+        });
+
         $this->app->singleton(StdioServer::class, fn ($app) => new StdioServer(
             $app->make(ToolRegistry::class),
+            $app->make(ResourceRegistry::class),
             'mcp-laravel',
             self::VERSION,
         ));

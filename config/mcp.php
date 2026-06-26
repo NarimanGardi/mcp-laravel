@@ -45,4 +45,14 @@ return [
         'max_lines' => 500,
     ],
 
+    /*
+     * Read-only resources the server exposes — attachable context for MCP
+     * clients that support resources (separate from on-demand tool calls).
+     */
+    'resources' => [
+        'schema' => true,
+        'routes' => true,
+        'models' => true,
+    ],
+
 ];
