@@ -10,10 +10,12 @@ use Gardi\McpLaravel\Tools\DatabaseQueryTool;
 use Gardi\McpLaravel\Tools\DatabaseSchemaTool;
 use Gardi\McpLaravel\Tools\DescribeModelTool;
 use Gardi\McpLaravel\Tools\DescribeTableTool;
+use Gardi\McpLaravel\Tools\ExplainQueryTool;
 use Gardi\McpLaravel\Tools\ListModelsTool;
 use Gardi\McpLaravel\Tools\ListRoutesTool;
 use Gardi\McpLaravel\Tools\ModelQueryTool;
 use Gardi\McpLaravel\Tools\RelationshipGraphTool;
+use Gardi\McpLaravel\Tools\TailLogsTool;
 use Illuminate\Support\ServiceProvider;
 
 class McpServiceProvider extends ServiceProvider
@@ -35,6 +37,12 @@ class McpServiceProvider extends ServiceProvider
                 'relationship_graph' => fn () => new RelationshipGraphTool($config['models_path'], $config['models_namespace']),
                 'describe_table' => fn () => new DescribeTableTool($config['database']['connection']),
                 'database_schema' => fn () => new DatabaseSchemaTool($config['database']['connection']),
+                'explain_query' => fn () => new ExplainQueryTool($config['database']['connection']),
+                'tail_logs' => fn () => new TailLogsTool(
+                    $config['logs']['path'],
+                    $config['logs']['default_lines'],
+                    $config['logs']['max_lines'],
+                ),
                 'model_query' => fn () => new ModelQueryTool(
                     $config['models_namespace'],
                     $config['query']['default_limit'],

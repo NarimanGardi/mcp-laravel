@@ -14,6 +14,8 @@ return [
         'relationship_graph' => true,
         'describe_table' => true,
         'database_schema' => true,
+        'explain_query' => true,
+        'tail_logs' => true,
         'model_query' => env('MCP_MODEL_QUERY', false),
         'database_query' => env('MCP_DATABASE_QUERY', false),
     ],
@@ -35,6 +37,12 @@ return [
     'query' => [
         'default_limit' => 50,
         'max_limit' => 500,
+    ],
+
+    'logs' => [
+        'path' => storage_path('logs'),
+        'default_lines' => 50,
+        'max_lines' => 500,
     ],
 
 ];
