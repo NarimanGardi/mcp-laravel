@@ -1,6 +1,11 @@
 # Changelog
 
-## v0.2.0 — unreleased
+## v0.3.0 — unreleased
+
+- Add `relationship_graph` — maps every model and its relationships as a graph
+  (nodes = models, edges = relations).
+
+## v0.2.0
 
 - Add `describe_table` (columns, indexes, foreign keys) and `database_schema`
   (whole-schema overview) tools.

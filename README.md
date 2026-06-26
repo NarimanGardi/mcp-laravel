@@ -60,6 +60,7 @@ That's it — the agent can now list and call the tools below.
 | `list_routes` | Methods, URI, name, action and middleware (optional substring filter). |
 | `list_models` | Eloquent models found under `app/Models`, with their tables. |
 | `describe_model` | A model's table, columns, fillable/hidden, casts and relationships. |
+| `relationship_graph` | Every model and its relationships as a graph (nodes + edges). |
 | `describe_table` | Any table's columns, indexes and foreign keys (not just models). |
 | `database_schema` | Every table with its columns — a whole-schema overview. |
 | `model_query` | Rows from a read-only Eloquent query (filters, columns, relations). Opt-in. |
