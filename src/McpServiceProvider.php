@@ -20,7 +20,7 @@ use Illuminate\Support\ServiceProvider;
 
 class McpServiceProvider extends ServiceProvider
 {
-    public const VERSION = '0.2.0';
+    public const VERSION = '0.3.0';
 
     public function register(): void
     {

@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.3.0 — unreleased
+## v0.3.0
 
 - Add `relationship_graph` — maps every model and its relationships as a graph
   (nodes = models, edges = relations).
