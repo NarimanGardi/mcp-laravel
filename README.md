@@ -51,7 +51,31 @@ in an MCP client's server config:
 }
 ```
 
-That's it — the agent can now list and call the tools below.
+That's it — the agent can now list and call the tools below. Ready-made configs
+for Claude Code, Cursor, Windsurf and Cline live in [`examples/`](examples/).
+
+## See it in action
+
+A real session (handshake → tool list → a `relationship_graph` call) is captured
+in [`demo/session.md`](demo/session.md) and reproducible with `./demo/run.sh` — it
+boots the real server via Testbench, nothing is mocked. An abbreviated peek (the
+demo uses the package's Post/Comment fixtures; you'd see your app's own models):
+
+```json
+// initialize → the server announces itself
+{ "protocolVersion": "2024-11-05", "serverInfo": { "name": "mcp-laravel", "version": "0.3.0" } }
+
+// relationship_graph → the domain, as a graph the agent can read
+{
+  "modelCount": 2,
+  "edges": [
+    { "from": "App\\Models\\Post",    "relation": "comments", "type": "HasMany",   "to": "App\\Models\\Comment" },
+    { "from": "App\\Models\\Comment", "relation": "post",     "type": "BelongsTo", "to": "App\\Models\\Post" }
+  ]
+}
+```
+
+Record a GIF of the session with [VHS](https://github.com/charmbracelet/vhs): `vhs demo/demo.tape`.
 
 ## Tools
 
@@ -89,9 +113,10 @@ MCP_DB_CONNECTION=readonly   # optional: a read-only connection
 
 Worth knowing before you rely on it:
 
-- `list_models` assumes the Laravel default PSR-4 mapping (`App\Models` →
-  `app/Models`). Models elsewhere need the `models_path` / `models_namespace`
-  config changed.
+- `list_models` / `relationship_graph` assume the Laravel default PSR-4 mapping
+  (`App\Models` → `app/Models`). For models elsewhere, set `models_path` /
+  `models_namespace` in the config (or the `MCP_MODELS_PATH` / `MCP_MODELS_NAMESPACE`
+  env vars).
 - `describe_model` detects relationships only when the relation method declares
   a return type (e.g. `public function posts(): HasMany`). Untyped relation
   methods aren't listed — calling every method to find out would be unsafe.

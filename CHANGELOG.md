@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Make model discovery path/namespace configurable via `MCP_MODELS_PATH` /
+  `MCP_MODELS_NAMESPACE` (or the `models_path` / `models_namespace` config).
+- Docs: add `demo/` (a reproducible live session via Testbench, with a VHS tape
+  for recording a GIF) and `examples/` (client configs for Claude Code, Cursor,
+  Windsurf, Cline).
+
 ## v0.3.0
 
 - Add `relationship_graph` — maps every model and its relationships as a graph
