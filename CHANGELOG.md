@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.5.1
+
+- Support Laravel 13 alongside Laravel 12 (and Pest 4 / Testbench 11). Laravel 13
+  requires PHP 8.3+, so the CI matrix excludes the PHP 8.2 × Laravel 13 combination.
+
 ## v0.5.0
 
 - Add `config_get` — read config values with sensitive keys redacted (errs toward
