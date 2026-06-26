@@ -2,6 +2,7 @@
 
 namespace Gardi\McpLaravel\Server;
 
+use InvalidArgumentException;
 use Throwable;
 
 /**
@@ -15,6 +16,7 @@ class StdioServer
 {
     public function __construct(
         protected ToolRegistry $tools,
+        protected ResourceRegistry $resources = new ResourceRegistry,
         protected string $serverName = 'mcp-laravel',
         protected string $serverVersion = '0.1.0',
     ) {
@@ -67,6 +69,8 @@ class StdioServer
                 'initialize' => $this->success($id, $this->initialize($params)),
                 'tools/list' => $this->success($id, ['tools' => $this->tools->schemas()]),
                 'tools/call' => $this->success($id, $this->callTool($params)),
+                'resources/list' => $this->success($id, ['resources' => $this->resources->list()]),
+                'resources/read' => $this->success($id, $this->readResource($params)),
                 'ping' => $this->success($id, (object) []),
                 default => $this->error($id, -32601, "Method not found: {$method}"),
             };
@@ -79,7 +83,10 @@ class StdioServer
     {
         return [
             'protocolVersion' => $params['protocolVersion'] ?? '2024-11-05',
-            'capabilities' => ['tools' => ['listChanged' => false]],
+            'capabilities' => [
+                'tools' => ['listChanged' => false],
+                'resources' => ['listChanged' => false],
+            ],
             'serverInfo' => ['name' => $this->serverName, 'version' => $this->serverVersion],
         ];
     }
@@ -109,6 +116,24 @@ class StdioServer
         return [
             'content' => [['type' => 'text', 'text' => $message]],
             'isError' => true,
+        ];
+    }
+
+    protected function readResource(array $params): array
+    {
+        $uri = (string) ($params['uri'] ?? '');
+        $resource = $this->resources->get($uri);
+
+        if ($resource === null) {
+            throw new InvalidArgumentException("Unknown resource: {$uri}");
+        }
+
+        return [
+            'contents' => [[
+                'uri' => $resource->uri(),
+                'mimeType' => $resource->mimeType(),
+                'text' => $resource->read(),
+            ]],
         ];
     }
 
