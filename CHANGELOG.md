@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Add MCP **prompts** (`prompts/list` / `prompts/get`): `explain_app`,
+  `review_model`, `write_test` and `debug_recent_error` — parameterised templates
+  that point the agent at the tools. Toggle in the `prompts` config block.
+- README: add CI / Packagist / license badges.
+
 ## v0.5.1
 
 - Support Laravel 13 alongside Laravel 12 (and Pest 4 / Testbench 11). Laravel 13

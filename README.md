@@ -1,8 +1,12 @@
 # mcp-laravel
 
+[![Tests](https://github.com/NarimanGardi/mcp-laravel/actions/workflows/tests.yml/badge.svg)](https://github.com/NarimanGardi/mcp-laravel/actions/workflows/tests.yml)
+[![Latest version](https://img.shields.io/packagist/v/gardi/mcp-laravel)](https://packagist.org/packages/gardi/mcp-laravel)
+[![License](https://img.shields.io/packagist/l/gardi/mcp-laravel)](LICENSE)
+
 An MCP server that lets an AI coding agent inspect a Laravel application — its
 routes, models, database schema, and (optionally) read-only query results —
-over stdio.
+over stdio or HTTP.
 
 I kept watching agents guess at a Laravel codebase: inventing model attributes,
 half-remembering route names, assuming a column exists. They were working from
@@ -141,6 +145,21 @@ attach to a conversation rather than call on demand:
 
 They're served via `resources/list` / `resources/read` and are thin adapters over
 the tools of the same name. Toggle them in the `resources` config block.
+
+## Prompts
+
+The server also ships **prompts** (`prompts/list` / `prompts/get`) — parameterised
+templates a client can surface as slash commands. Each points the agent at the
+tools above, so a one-click prompt turns into grounded work:
+
+| Prompt | Does |
+|--------|------|
+| `explain_app` | Tours the app via its routes, model graph and schema. |
+| `review_model` | Reviews a model (arg: `model`) — relations, casts, N+1, mass-assignment. |
+| `write_test` | Writes a Pest test (arg: `subject`), inspecting routes/models first. |
+| `debug_recent_error` | Reads recent logs with `tail_logs` and traces the latest error. |
+
+Toggle them in the `prompts` config block.
 
 ## Limitations
 
