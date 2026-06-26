@@ -10,13 +10,16 @@ use Gardi\McpLaravel\Server\Dispatcher;
 use Gardi\McpLaravel\Server\ResourceRegistry;
 use Gardi\McpLaravel\Server\StdioServer;
 use Gardi\McpLaravel\Server\ToolRegistry;
+use Gardi\McpLaravel\Tools\ConfigGetTool;
 use Gardi\McpLaravel\Tools\DatabaseQueryTool;
 use Gardi\McpLaravel\Tools\DatabaseSchemaTool;
 use Gardi\McpLaravel\Tools\DescribeModelTool;
 use Gardi\McpLaravel\Tools\DescribeTableTool;
 use Gardi\McpLaravel\Tools\ExplainQueryTool;
+use Gardi\McpLaravel\Tools\ListCommandsTool;
 use Gardi\McpLaravel\Tools\ListModelsTool;
 use Gardi\McpLaravel\Tools\ListRoutesTool;
+use Gardi\McpLaravel\Tools\MigrationStatusTool;
 use Gardi\McpLaravel\Tools\ModelQueryTool;
 use Gardi\McpLaravel\Tools\RelationshipGraphTool;
 use Gardi\McpLaravel\Tools\TailLogsTool;
@@ -47,6 +50,9 @@ class McpServiceProvider extends ServiceProvider
                     $config['logs']['default_lines'],
                     $config['logs']['max_lines'],
                 ),
+                'config_get' => fn () => new ConfigGetTool($config['redact_keys'] ?? []),
+                'migration_status' => fn () => new MigrationStatusTool($app->make('migrator'), $config['migrations_path']),
+                'list_commands' => fn () => new ListCommandsTool($app->make(\Illuminate\Contracts\Console\Kernel::class)),
                 'model_query' => fn () => new ModelQueryTool(
                     $config['models_namespace'],
                     $config['query']['default_limit'],

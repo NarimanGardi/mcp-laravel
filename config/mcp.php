@@ -16,6 +16,9 @@ return [
         'database_schema' => true,
         'explain_query' => true,
         'tail_logs' => true,
+        'config_get' => true,
+        'migration_status' => true,
+        'list_commands' => true,
         'model_query' => env('MCP_MODEL_QUERY', false),
         'database_query' => env('MCP_DATABASE_QUERY', false),
     ],
@@ -26,6 +29,10 @@ return [
      */
     'models_path' => env('MCP_MODELS_PATH', app_path('Models')),
     'models_namespace' => env('MCP_MODELS_NAMESPACE', 'App\\Models'),
+    'migrations_path' => env('MCP_MIGRATIONS_PATH', database_path('migrations')),
+
+    // Extra key substrings config_get should redact, on top of the built-in list.
+    'redact_keys' => [],
 
     'database' => [
         // null uses the app's default connection.
