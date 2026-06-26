@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.6.0
 
 - Add MCP **prompts** (`prompts/list` / `prompts/get`): `explain_app`,
   `review_model`, `write_test` and `debug_recent_error` — parameterised templates
