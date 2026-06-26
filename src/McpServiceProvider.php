@@ -4,7 +4,9 @@ namespace Gardi\McpLaravel;
 
 use Gardi\McpLaravel\Console\InstallCommand;
 use Gardi\McpLaravel\Console\ServeCommand;
+use Gardi\McpLaravel\Http\McpController;
 use Gardi\McpLaravel\Resources\ToolResource;
+use Gardi\McpLaravel\Server\Dispatcher;
 use Gardi\McpLaravel\Server\ResourceRegistry;
 use Gardi\McpLaravel\Server\StdioServer;
 use Gardi\McpLaravel\Server\ToolRegistry;
@@ -104,12 +106,14 @@ class McpServiceProvider extends ServiceProvider
             return $registry;
         });
 
-        $this->app->singleton(StdioServer::class, fn ($app) => new StdioServer(
+        $this->app->singleton(Dispatcher::class, fn ($app) => new Dispatcher(
             $app->make(ToolRegistry::class),
             $app->make(ResourceRegistry::class),
             'mcp-laravel',
             self::VERSION,
         ));
+
+        $this->app->singleton(StdioServer::class, fn ($app) => new StdioServer($app->make(Dispatcher::class)));
     }
 
     public function boot(): void
@@ -120,6 +124,16 @@ class McpServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/mcp.php' => $this->app->configPath('mcp.php'),
             ], 'mcp-config');
+        }
+
+        $config = $this->app['config'];
+
+        // HTTP transport is opt-in and refuses to register without a token.
+        if ($config->get('mcp.http.enabled') && $config->get('mcp.http.token')) {
+            $this->app['router']->post(
+                $config->get('mcp.http.path', 'mcp'),
+                McpController::class,
+            )->name('mcp.http');
         }
     }
 }
