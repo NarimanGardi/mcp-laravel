@@ -2,17 +2,12 @@
 
 namespace Gardi\McpLaravel\Tools;
 
+use Gardi\McpLaravel\Tools\Concerns\DiscoversModels;
 use Gardi\McpLaravel\Tools\Concerns\IsReadOnly;
-use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\Finder\Finder;
 
-/**
- * Discovers Eloquent models by scanning the configured models directory.
- * Assumes PSR-4 mapping of the configured namespace to that directory
- * (the Laravel default: App\Models => app/Models).
- */
 class ListModelsTool implements Tool
 {
+    use DiscoversModels;
     use IsReadOnly;
 
     public function __construct(
@@ -45,34 +40,11 @@ class ListModelsTool implements Tool
             ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         }
 
-        $models = [];
-
-        foreach (Finder::create()->files()->in($this->modelsPath)->name('*.php') as $file) {
-            $class = $this->classFromFile($file->getRealPath());
-
-            if ($class === null || ! is_subclass_of($class, Model::class)) {
-                continue;
-            }
-
-            /** @var Model $instance */
-            $instance = new $class;
-
-            $models[] = ['class' => $class, 'table' => $instance->getTable()];
-        }
-
-        return json_encode(['models' => $models], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    }
-
-    protected function classFromFile(string $path): ?string
-    {
-        $relative = str_replace(
-            [rtrim($this->modelsPath, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR, '.php'],
-            '',
-            $path
+        $models = array_map(
+            fn (string $class) => ['class' => $class, 'table' => (new $class)->getTable()],
+            $this->discoverModels($this->modelsPath, $this->modelsNamespace),
         );
 
-        $class = $this->modelsNamespace.'\\'.str_replace(DIRECTORY_SEPARATOR, '\\', $relative);
-
-        return class_exists($class) ? $class : null;
+        return json_encode(['models' => $models], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 }
