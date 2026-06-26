@@ -24,8 +24,8 @@ return [
      * Where models live and the namespace they map to (Laravel defaults).
      * Change these if your app keeps models elsewhere.
      */
-    'models_path' => app_path('Models'),
-    'models_namespace' => 'App\\Models',
+    'models_path' => env('MCP_MODELS_PATH', app_path('Models')),
+    'models_namespace' => env('MCP_MODELS_NAMESPACE', 'App\\Models'),
 
     'database' => [
         // null uses the app's default connection.
