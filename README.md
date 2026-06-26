@@ -63,6 +63,8 @@ That's it — the agent can now list and call the tools below.
 | `relationship_graph` | Every model and its relationships as a graph (nodes + edges). |
 | `describe_table` | Any table's columns, indexes and foreign keys (not just models). |
 | `database_schema` | Every table with its columns — a whole-schema overview. |
+| `explain_query` | The query plan (EXPLAIN) for a read-only SELECT — without running it. |
+| `tail_logs` | The last lines of a log file (newest in `storage/logs` by default). |
 | `model_query` | Rows from a read-only Eloquent query (filters, columns, relations). Opt-in. |
 | `database_query` | Rows from a single **read-only** SELECT. Opt-in (see below). |
 
@@ -93,9 +95,11 @@ Worth knowing before you rely on it:
 - `describe_model` detects relationships only when the relation method declares
   a return type (e.g. `public function posts(): HasMany`). Untyped relation
   methods aren't listed — calling every method to find out would be unsafe.
-- The `database_query` read-only check is a keyword/structure heuristic, not a
-  SQL parser. Pair it with a read-only DB user; don't treat the heuristic as
-  your only line of defense.
+- The `database_query` / `explain_query` read-only check is a keyword/structure
+  heuristic, not a SQL parser. Pair it with a read-only DB user; don't treat the
+  heuristic as your only line of defense.
+- `tail_logs` returns whatever is in your log files, which can include sensitive
+  data (exception payloads, tokens). Disable it or scrub logs if that matters.
 
 ## Development
 

@@ -4,6 +4,10 @@
 
 - Add `relationship_graph` — maps every model and its relationships as a graph
   (nodes = models, edges = relations).
+- Add `tail_logs` — return the last lines of a log file (newest in `storage/logs`
+  by default), reading only the file's tail.
+- Add `explain_query` — return the query plan (EXPLAIN) for a read-only SELECT
+  without executing it.
 
 ## v0.2.0
 
