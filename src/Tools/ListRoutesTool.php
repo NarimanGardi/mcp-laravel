@@ -2,10 +2,13 @@
 
 namespace Gardi\McpLaravel\Tools;
 
+use Gardi\McpLaravel\Tools\Concerns\IsReadOnly;
 use Illuminate\Routing\Router;
 
 class ListRoutesTool implements Tool
 {
+    use IsReadOnly;
+
     public function __construct(protected Router $router)
     {
     }

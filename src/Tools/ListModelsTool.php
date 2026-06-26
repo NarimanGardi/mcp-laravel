@@ -2,6 +2,7 @@
 
 namespace Gardi\McpLaravel\Tools;
 
+use Gardi\McpLaravel\Tools\Concerns\IsReadOnly;
 use Illuminate\Database\Eloquent\Model;
 use Symfony\Component\Finder\Finder;
 
@@ -12,6 +13,8 @@ use Symfony\Component\Finder\Finder;
  */
 class ListModelsTool implements Tool
 {
+    use IsReadOnly;
+
     public function __construct(
         protected string $modelsPath,
         protected string $modelsNamespace,

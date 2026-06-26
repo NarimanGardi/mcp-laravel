@@ -19,13 +19,21 @@ class ToolRegistry
         return $this->tools[$name] ?? null;
     }
 
-    /** @return list<array{name: string, description: string, inputSchema: array}> */
+    /** @return list<array<string, mixed>> */
     public function schemas(): array
     {
-        return array_map(fn (Tool $tool) => [
-            'name' => $tool->name(),
-            'description' => $tool->description(),
-            'inputSchema' => $tool->inputSchema(),
-        ], array_values($this->tools));
+        return array_map(function (Tool $tool) {
+            $schema = [
+                'name' => $tool->name(),
+                'description' => $tool->description(),
+                'inputSchema' => $tool->inputSchema(),
+            ];
+
+            if (($annotations = $tool->annotations()) !== []) {
+                $schema['annotations'] = $annotations;
+            }
+
+            return $schema;
+        }, array_values($this->tools));
     }
 }

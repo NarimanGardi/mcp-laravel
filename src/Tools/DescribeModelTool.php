@@ -2,6 +2,8 @@
 
 namespace Gardi\McpLaravel\Tools;
 
+use Gardi\McpLaravel\Tools\Concerns\IsReadOnly;
+use Gardi\McpLaravel\Tools\Concerns\ResolvesModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Schema;
@@ -12,6 +14,9 @@ use ReflectionNamedType;
 
 class DescribeModelTool implements Tool
 {
+    use IsReadOnly;
+    use ResolvesModel;
+
     public function __construct(protected string $modelsNamespace)
     {
     }
@@ -48,7 +53,7 @@ class DescribeModelTool implements Tool
             throw new InvalidArgumentException('The "model" argument is required.');
         }
 
-        $class = $this->resolveClass($input);
+        $class = $this->resolveModelClass($input, $this->modelsNamespace);
 
         if ($class === null) {
             throw new InvalidArgumentException("Model not found: {$input}");
@@ -67,17 +72,6 @@ class DescribeModelTool implements Tool
             'casts' => $model->getCasts(),
             'relations' => $this->relations($class),
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    }
-
-    protected function resolveClass(string $input): ?string
-    {
-        if (class_exists($input)) {
-            return $input;
-        }
-
-        $guess = $this->modelsNamespace.'\\'.$input;
-
-        return class_exists($guess) ? $guess : null;
     }
 
     /** @return list<array{name: string, type: ?string, nullable: ?bool}> */

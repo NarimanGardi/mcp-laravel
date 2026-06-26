@@ -13,6 +13,9 @@ interface Tool
     /** JSON Schema describing the tool's arguments. */
     public function inputSchema(): array;
 
+    /** MCP tool annotations — behavioural hints such as readOnlyHint, destructiveHint. */
+    public function annotations(): array;
+
     /**
      * Run the tool and return a text result for the agent.
      *

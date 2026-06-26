@@ -2,6 +2,7 @@
 
 namespace Gardi\McpLaravel\Tools;
 
+use Gardi\McpLaravel\Tools\Concerns\IsReadOnly;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
@@ -15,6 +16,8 @@ use InvalidArgumentException;
  */
 class DatabaseQueryTool implements Tool
 {
+    use IsReadOnly;
+
     private const FORBIDDEN = [
         'insert', 'update', 'delete', 'drop', 'alter', 'truncate',
         'create', 'replace', 'grant', 'revoke', 'attach', 'pragma', 'into',
