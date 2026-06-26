@@ -2,6 +2,7 @@
 
 namespace Gardi\McpLaravel\Tools;
 
+use Gardi\McpLaravel\Tools\Concerns\AssertsReadOnlySql;
 use Gardi\McpLaravel\Tools\Concerns\IsReadOnly;
 use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
@@ -16,12 +17,8 @@ use InvalidArgumentException;
  */
 class DatabaseQueryTool implements Tool
 {
+    use AssertsReadOnlySql;
     use IsReadOnly;
-
-    private const FORBIDDEN = [
-        'insert', 'update', 'delete', 'drop', 'alter', 'truncate',
-        'create', 'replace', 'grant', 'revoke', 'attach', 'pragma', 'into',
-    ];
 
     public function __construct(
         protected ?string $connection = null,
@@ -66,7 +63,7 @@ class DatabaseQueryTool implements Tool
             throw new InvalidArgumentException('The "query" argument is required.');
         }
 
-        $this->assertReadOnly($sql);
+        $this->assertReadOnlySql($sql);
 
         $limit = (int) ($arguments['limit'] ?? $this->defaultLimit);
         $limit = max(1, min($limit, $this->maxLimit));
@@ -88,20 +85,5 @@ class DatabaseQueryTool implements Tool
             'truncated' => count($rows) === $limit,
             'rows' => $rows,
         ], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-    }
-
-    protected function assertReadOnly(string $sql): void
-    {
-        if (str_contains(rtrim($sql, "; \t\n\r"), ';')) {
-            throw new InvalidArgumentException('Only a single statement is allowed (no semicolons).');
-        }
-
-        if (! preg_match('/^\s*(select|with)\b/i', $sql)) {
-            throw new InvalidArgumentException('Only SELECT (or WITH ... SELECT) queries are allowed.');
-        }
-
-        if (preg_match('/\b('.implode('|', self::FORBIDDEN).')\b/i', $sql)) {
-            throw new InvalidArgumentException('Query contains a forbidden keyword; only read-only queries are allowed.');
-        }
     }
 }
