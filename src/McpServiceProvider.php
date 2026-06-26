@@ -13,6 +13,7 @@ use Gardi\McpLaravel\Tools\DescribeTableTool;
 use Gardi\McpLaravel\Tools\ListModelsTool;
 use Gardi\McpLaravel\Tools\ListRoutesTool;
 use Gardi\McpLaravel\Tools\ModelQueryTool;
+use Gardi\McpLaravel\Tools\RelationshipGraphTool;
 use Illuminate\Support\ServiceProvider;
 
 class McpServiceProvider extends ServiceProvider
@@ -31,6 +32,7 @@ class McpServiceProvider extends ServiceProvider
                 'list_routes' => fn () => new ListRoutesTool($app['router']),
                 'list_models' => fn () => new ListModelsTool($config['models_path'], $config['models_namespace']),
                 'describe_model' => fn () => new DescribeModelTool($config['models_namespace']),
+                'relationship_graph' => fn () => new RelationshipGraphTool($config['models_path'], $config['models_namespace']),
                 'describe_table' => fn () => new DescribeTableTool($config['database']['connection']),
                 'database_schema' => fn () => new DatabaseSchemaTool($config['database']['connection']),
                 'model_query' => fn () => new ModelQueryTool(

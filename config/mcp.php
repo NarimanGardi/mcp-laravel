@@ -11,6 +11,7 @@ return [
         'list_routes' => true,
         'list_models' => true,
         'describe_model' => true,
+        'relationship_graph' => true,
         'describe_table' => true,
         'database_schema' => true,
         'model_query' => env('MCP_MODEL_QUERY', false),
